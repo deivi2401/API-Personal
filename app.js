@@ -3,13 +3,24 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+require("dotenv").config();
+const port = process.env.port || 3000;
+
+mongoose
+  .connect(
+    "mongodb+srv://dvid2401:" +
+      process.env.MONGO_ATLAS_PWD +
+      "@node-rest-shop.4gt2mzb.mongodb.net/?retryWrites=true&w=majority&appName=node-rest-shop"
+  )
+  .then(() => {
+    app.listen(port, () => console.log(`Escuchando en puerto ${port}...`));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
-
-mongoose.connect(
-  "mongodb+srv://dvid2401:"+ process.env.MONGO_ATLAS_PWD+"@node-rest-shop.4gt2mzb.mongodb.net/"
-);
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,5 +56,6 @@ app.use((error, req, res, next) => {
   });
 });
 
-const port = process.env.port || 3000;
-app.listen(port, () => console.log(`Escuchando en puerto ${port}...`));
+
+
+
